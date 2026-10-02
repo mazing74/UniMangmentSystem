@@ -1,4 +1,6 @@
-﻿@model Department
+﻿@* : لما اخلي الفيو يبقا فيه موديل كدا بيبقا 
+-strongly typed view *@
+@model Department
 @{
     ViewData["Title"] = "Edit Page";
 }
@@ -26,3 +28,7 @@
     <input type="submit" value="Save Changes" class="btn btn-primary" />
     <a asp-action="Index" class="btn btn-light">Back To List</a>
 </form>
+@section  Scripts{
+    <partial name="_ValidationScriptsPartial" />
+
+}

@@ -25,12 +25,18 @@ namespace UMS.PL.Controllers
         [HttpPost]
         public IActionResult Create(Department department)
         {
-            if (ModelState.IsValid)
+            var checkDepartment = _departmentRepository.GetById(department.Id);
+            if (checkDepartment is null)
             {
-                _departmentRepository.Add(department);
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    _departmentRepository.Add(department);
+                    return RedirectToAction(nameof(Index));
+                }
+                return View(department);
             }
-            return View(department);
+            else
+                return BadRequest();
         }
 
         public IActionResult Details(int? id, string ViewName = "Details")
@@ -76,7 +82,7 @@ namespace UMS.PL.Controllers
 
         }
         [HttpGet]
-        public IActionResult Delete(int? id) 
+        public IActionResult Delete(int? id)
         {
             return Details(id.Value, "Delete");
         }
