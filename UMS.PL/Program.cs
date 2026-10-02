@@ -1,3 +1,8 @@
+using Microsoft.EntityFrameworkCore;
+using UMS.BLL.InterFace;
+using UMS.BLL.Repository;
+using UMS.DAL;
+
 namespace UMS.PL
 {
     public class Program
@@ -8,6 +13,17 @@ namespace UMS.PL
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            // Add services to The Database.
+            builder.Services.AddDbContext<UniDBContext>(Options =>
+            {
+                Options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+            });
+            // ── AppService ────────
+            builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+
+            builder.Services.AddScoped<IEmpolyeeRepository, EmpolyeeRepository>();
+
 
             var app = builder.Build();
 
@@ -32,5 +48,6 @@ namespace UMS.PL
 
             app.Run();
         }
+        
     }
 }
