@@ -32,5 +32,77 @@ namespace UMS.PL.Controllers
             }
             return View(department);
         }
+
+        public IActionResult Details(int? id, string ViewName = "Details")
+        {
+            if (id is null)
+                return BadRequest();
+
+            var department = _departmentRepository.GetById(id.Value);
+            if (department is null)
+                return NotFound();
+
+            return View(ViewName, department);
+        }
+        [HttpGet]
+        public IActionResult Edit(int? id)
+        {
+            return Details(id.Value, "Edit");
+
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(Department department, [FromRoute] int id)
+        {
+            if (id != department.Id)
+            {
+                return BadRequest();
+            }
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _departmentRepository.Ubdate(department);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+
+                    ModelState.AddModelError(string.Empty, ex.Message);
+                }
+
+            }
+            return View(department);
+
+        }
+        [HttpGet]
+        public IActionResult Delete(int? id) 
+        {
+            return Details(id.Value, "Delete");
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(Department department, [FromRoute] int id)
+        {
+            if (id != department.Id)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                _departmentRepository.Delete(department);
+                return RedirectToAction(nameof(Index));
+
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError(string.Empty, ex.Message);
+            }
+            return View(department);
+        }
+
+
     }
 }
