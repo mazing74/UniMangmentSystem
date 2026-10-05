@@ -18,16 +18,14 @@ namespace UMS.BLL.Repository
         {
             _context = context;
         }
-        public int Add(T entity)
+        public void Add(T entity)
         {
             _context.Add(entity);
-                return _context.SaveChanges();
         }
 
-        public int Delete(T entity)
+        public void Delete(T entity)
         {
             _context.Remove(entity);
-            return _context.SaveChanges();
 
         }
 
@@ -43,11 +41,9 @@ namespace UMS.BLL.Repository
         public T GetById(int id)=> _context.Set<T>().Find(id);
            
 
-        public int Ubdate(T entity)
+        public void Ubdate(T entity)
         {
             _context.Update(entity);
-            return _context.SaveChanges();
-
         }
     }
 }

@@ -8,25 +8,23 @@ namespace UMS.PL.Controllers
 {
     public class EmpolyeeController : Controller
     {
-        private readonly IEmpolyeeRepository _empolyeeRepository;
-        private readonly IDepartmentRepository _departmentRepository;
+        private readonly IunitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public EmpolyeeController(IEmpolyeeRepository empolyeeRepository,IDepartmentRepository departmentRepository ,IMapper mapper)
+        public EmpolyeeController(IunitOfWork unitOfWork ,IMapper mapper)
         {
-            _empolyeeRepository = empolyeeRepository;
-            _departmentRepository = departmentRepository;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
         public IActionResult Index(string searchedvalue)
         {
-            var employees = _empolyeeRepository.SearchByName(searchedvalue);
+            var employees = _unitOfWork.EmpolyeeRepository.SearchByName(searchedvalue);
             var empVm = _mapper.Map<IEnumerable <Employee>,IEnumerable <EmployeeVM>>(employees);
             return View(empVm);
         }
         public IActionResult Create()
         {
-            ViewBag.Departments = _departmentRepository.GetAll();
+            ViewBag.Departments = _unitOfWork.DepartmentRepository.GetAll();
             return View();
         }
         [HttpPost]
@@ -35,7 +33,9 @@ namespace UMS.PL.Controllers
             if (ModelState.IsValid)
             {
                 var MappedEmp = _mapper.Map<EmployeeVM, Employee>(employeevm);
-                _empolyeeRepository.Add(MappedEmp);
+                _unitOfWork.EmpolyeeRepository.Add(MappedEmp);
+                _unitOfWork.Compelete();
+
                 TempData["SuccessMessageOfEmpolyee"] = "Employee created successfully!";
 
                 return RedirectToAction(nameof(Index));
@@ -47,7 +47,7 @@ namespace UMS.PL.Controllers
             if (id is null)
                 return BadRequest();
 
-            var empolyee = _empolyeeRepository.GetById(id.Value);
+            var empolyee = _unitOfWork.EmpolyeeRepository.GetById(id.Value);
 
             if (empolyee is null)
                 return NotFound();
@@ -57,7 +57,7 @@ namespace UMS.PL.Controllers
         }
         public IActionResult Edit(int? id)
         {
-            ViewBag.Departments = _departmentRepository.GetAll();
+            ViewBag.Departments = _unitOfWork.DepartmentRepository.GetAll();
             return Details(id.Value, "Edit");
         }
         [HttpPost]
@@ -72,8 +72,10 @@ namespace UMS.PL.Controllers
                 try
                 {
                     var employee = _mapper.Map<EmployeeVM, Employee>(employeevM);
-                    _empolyeeRepository.Ubdate(employee);
-                   return RedirectToAction(nameof(Index));
+                    _unitOfWork.EmpolyeeRepository.Ubdate(employee);
+                    _unitOfWork.Compelete();
+
+                    return RedirectToAction(nameof(Index));
 
                 }
                 catch (Exception ex)
@@ -98,7 +100,9 @@ namespace UMS.PL.Controllers
             try
             {
                 var employee = _mapper.Map<EmployeeVM, Employee>(employeeVm);
-                _empolyeeRepository.Delete(employee);
+                _unitOfWork.EmpolyeeRepository.Delete(employee);
+                _unitOfWork.Compelete();
+
                 return RedirectToAction("Index");
 
             }

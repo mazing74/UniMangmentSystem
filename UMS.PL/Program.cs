@@ -21,12 +21,11 @@ namespace UMS.PL
                 Options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
             // ── AppService ────────
-            builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
-
-            builder.Services.AddScoped<IEmpolyeeRepository, EmpolyeeRepository>();
 
             builder.Services.AddAutoMapper(m=>m.AddProfile(new EmployeeProfile()));
             builder.Services.AddAutoMapper(m=>m.AddProfile(new DepartmentProfile()));
+
+            builder.Services.AddScoped<IunitOfWork, UnitOfWork>();
 
             var app = builder.Build();
 

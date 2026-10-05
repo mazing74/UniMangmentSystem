@@ -8,17 +8,17 @@ namespace UMS.PL.Controllers
 {
     public class DepartmentController : Controller
     {
-        private readonly IDepartmentRepository _departmentRepository;
+        private readonly IunitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public DepartmentController(IDepartmentRepository departmentRepository,IMapper mapper)
+        public DepartmentController(IunitOfWork unitOfWork,IMapper mapper)
         {
-            _departmentRepository = departmentRepository;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
         public IActionResult Index()
         {
-            var departments = _departmentRepository.GetAll();
+            var departments = _unitOfWork.DepartmentRepository.GetAll();
             var DeptVm = _mapper.Map<IEnumerable<Department>, IEnumerable<DepartmentVM>>(departments);
             return View(DeptVm);
         }
@@ -30,13 +30,14 @@ namespace UMS.PL.Controllers
         [HttpPost]
         public IActionResult Create(DepartmentVM departmentVm)
         {
-            var checkDepartment = _departmentRepository.GetById(departmentVm.Id);
+            var checkDepartment = _unitOfWork.DepartmentRepository.GetById(departmentVm.Id);
             if (checkDepartment is null)
             {
                 if (ModelState.IsValid)
                 {
                     var Dept = _mapper.Map<DepartmentVM, Department>(departmentVm);
-                    _departmentRepository.Add(Dept);
+                    _unitOfWork.DepartmentRepository.Add(Dept);
+                    _unitOfWork.Compelete();
                     TempData["SuccessMessageOfDepartment"] = "Department created successfully!";
                     return RedirectToAction(nameof(Index));
                 }
@@ -51,7 +52,7 @@ namespace UMS.PL.Controllers
             if (id is null)
                 return BadRequest();
 
-            var department = _departmentRepository.GetById(id.Value);
+            var department = _unitOfWork.DepartmentRepository.GetById(id.Value);
 
             if (department is null)
                 return NotFound();
@@ -79,7 +80,8 @@ namespace UMS.PL.Controllers
                 {
                     var Dept = _mapper.Map<DepartmentVM, Department>(departmentVm);
 
-                    _departmentRepository.Ubdate(Dept);
+                    _unitOfWork.DepartmentRepository.Ubdate(Dept);
+                    _unitOfWork.Compelete();
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
@@ -110,7 +112,8 @@ namespace UMS.PL.Controllers
             {
                 var Dept = _mapper.Map<DepartmentVM, Department>(departmentVm);
 
-                _departmentRepository.Delete(Dept);
+                _unitOfWork.DepartmentRepository.Delete(Dept);
+                _unitOfWork.Compelete();
                 return RedirectToAction(nameof(Index));
 
             }

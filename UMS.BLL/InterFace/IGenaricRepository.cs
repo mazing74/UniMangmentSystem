@@ -10,9 +10,9 @@ namespace UMS.BLL.InterFace
     {
         public IEnumerable<T> GetAll();
         public T GetById(int id);
-        public int Add(T entity);
-        public int Ubdate(T entity);
-        public int Delete(T entity);
+        public void  Add(T entity);
+        public void  Ubdate(T entity);
+        public void  Delete(T entity);
 
     }
 }
