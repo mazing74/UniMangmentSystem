@@ -31,6 +31,7 @@ namespace UMS.PL.Controllers
                 if (ModelState.IsValid)
                 {
                     _departmentRepository.Add(department);
+                    TempData["SuccessMessageOfDepartment"] = "Department created successfully!";
                     return RedirectToAction(nameof(Index));
                 }
                 return View(department);

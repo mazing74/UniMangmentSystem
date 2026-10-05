@@ -9,5 +9,6 @@ namespace UMS.BLL.InterFace
 {
     public interface IEmpolyeeRepository:IGenaricRepository<Employee>
     {
+        IQueryable<Employee> SearchByName(string name);
     }
 }

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UMS.BLL.InterFace;
 using UMS.DAL;
+using UMS.DAL.Models;
 
 namespace UMS.BLL.Repository
 {
@@ -32,6 +33,10 @@ namespace UMS.BLL.Repository
 
         public IEnumerable<T> GetAll()
         {
+            if (typeof(T) == typeof (Employee))
+            {
+                return (IEnumerable<T>)_context.Employees.Include(e => e.Department).ToList();
+            }
            return _context.Set<T>().ToList();
         }
 

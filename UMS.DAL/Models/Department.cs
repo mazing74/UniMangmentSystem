@@ -12,9 +12,7 @@ namespace UMS.DAL.Models
     {
         public int Id { get; set; }
         [MaxLength(50)]
-        [Required(ErrorMessage = "Name is mandatory.")]
         public string Name { get; set; }
-        [Required(ErrorMessage = "Code name is required.")]
         public string Code { get; set; }
         public DateTime DateOfCreation { get; set; }
 
