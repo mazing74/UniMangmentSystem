@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using UMS.BLL.InterFace;
 using UMS.DAL.Models;
+using UMS.PL.ViewModels;
 
 namespace UMS.PL.Controllers
 {
@@ -8,16 +10,19 @@ namespace UMS.PL.Controllers
     {
         private readonly IEmpolyeeRepository _empolyeeRepository;
         private readonly IDepartmentRepository _departmentRepository;
+        private readonly IMapper _mapper;
 
-        public EmpolyeeController(IEmpolyeeRepository empolyeeRepository,IDepartmentRepository departmentRepository)
+        public EmpolyeeController(IEmpolyeeRepository empolyeeRepository,IDepartmentRepository departmentRepository ,IMapper mapper)
         {
             _empolyeeRepository = empolyeeRepository;
             _departmentRepository = departmentRepository;
+            _mapper = mapper;
         }
         public IActionResult Index(string searchedvalue)
         {
             var employees = _empolyeeRepository.SearchByName(searchedvalue);
-            return View(employees);
+            var empVm = _mapper.Map<IEnumerable <Employee>,IEnumerable <EmployeeVM>>(employees);
+            return View(empVm);
         }
         public IActionResult Create()
         {
@@ -25,16 +30,17 @@ namespace UMS.PL.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Create(Employee employee)
+        public IActionResult Create(EmployeeVM employeevm)
         {
             if (ModelState.IsValid)
             {
-                _empolyeeRepository.Add(employee);
+                var MappedEmp = _mapper.Map<EmployeeVM, Employee>(employeevm);
+                _empolyeeRepository.Add(MappedEmp);
                 TempData["SuccessMessageOfEmpolyee"] = "Employee created successfully!";
 
                 return RedirectToAction(nameof(Index));
             }
-            return View(employee);
+            return View(employeevm);
         }
         public IActionResult Details(int? id, string ViewName = "Details")
         {
@@ -42,26 +48,30 @@ namespace UMS.PL.Controllers
                 return BadRequest();
 
             var empolyee = _empolyeeRepository.GetById(id.Value);
+
             if (empolyee is null)
                 return NotFound();
 
-            return View(ViewName, empolyee);
+            var empVm = _mapper.Map<Employee, EmployeeVM>(empolyee);
+            return View(ViewName, empVm);
         }
         public IActionResult Edit(int? id)
         {
+            ViewBag.Departments = _departmentRepository.GetAll();
             return Details(id.Value, "Edit");
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Employee employee, [FromRoute] int id)
+        public IActionResult Edit(EmployeeVM employeevM, [FromRoute] int id)
         {
-            if (id != employee.Id)
+            if (id != employeevM.Id)
                 return BadRequest();
 
             if (ModelState.IsValid)
             {
                 try
                 {
+                    var employee = _mapper.Map<EmployeeVM, Employee>(employeevM);
                     _empolyeeRepository.Ubdate(employee);
                    return RedirectToAction(nameof(Index));
 
@@ -72,21 +82,22 @@ namespace UMS.PL.Controllers
                     ModelState.AddModelError(string.Empty, ex.Message);
                 }
             }
-            return View(employee);
+            return View(employeevM);
         }
         public IActionResult Delete(int? id)
         {
             return Details(id.Value, "Delete");
         }
         [HttpPost]
-        public IActionResult Delete(Employee employee, [FromRoute] int id)
+        public IActionResult Delete(EmployeeVM employeeVm, [FromRoute] int id)
         {
-            if (id != employee.Id)
+            if (id != employeeVm.Id)
             {
                 return BadRequest();
             }
             try
             {
+                var employee = _mapper.Map<EmployeeVM, Employee>(employeeVm);
                 _empolyeeRepository.Delete(employee);
                 return RedirectToAction("Index");
 
@@ -95,7 +106,7 @@ namespace UMS.PL.Controllers
             {
 
                 ModelState.AddModelError(string.Empty, ex.Message);
-                return View(employee);
+                return View(employeeVm);
             }
         }
 

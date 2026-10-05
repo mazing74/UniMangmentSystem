@@ -1,21 +1,26 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using UMS.BLL.InterFace;
 using UMS.DAL.Models;
+using UMS.PL.ViewModels;
 
 namespace UMS.PL.Controllers
 {
     public class DepartmentController : Controller
     {
         private readonly IDepartmentRepository _departmentRepository;
+        private readonly IMapper _mapper;
 
-        public DepartmentController(IDepartmentRepository departmentRepository)
+        public DepartmentController(IDepartmentRepository departmentRepository,IMapper mapper)
         {
             _departmentRepository = departmentRepository;
+            _mapper = mapper;
         }
         public IActionResult Index()
         {
             var departments = _departmentRepository.GetAll();
-            return View(departments);
+            var DeptVm = _mapper.Map<IEnumerable<Department>, IEnumerable<DepartmentVM>>(departments);
+            return View(DeptVm);
         }
         [HttpGet]
         public IActionResult Create()
@@ -23,18 +28,19 @@ namespace UMS.PL.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Create(Department department)
+        public IActionResult Create(DepartmentVM departmentVm)
         {
-            var checkDepartment = _departmentRepository.GetById(department.Id);
+            var checkDepartment = _departmentRepository.GetById(departmentVm.Id);
             if (checkDepartment is null)
             {
                 if (ModelState.IsValid)
                 {
-                    _departmentRepository.Add(department);
+                    var Dept = _mapper.Map<DepartmentVM, Department>(departmentVm);
+                    _departmentRepository.Add(Dept);
                     TempData["SuccessMessageOfDepartment"] = "Department created successfully!";
                     return RedirectToAction(nameof(Index));
                 }
-                return View(department);
+                return View(departmentVm);
             }
             else
                 return BadRequest();
@@ -46,10 +52,12 @@ namespace UMS.PL.Controllers
                 return BadRequest();
 
             var department = _departmentRepository.GetById(id.Value);
+
             if (department is null)
                 return NotFound();
+            var DeptVm = _mapper.Map<Department, DepartmentVM>(department);
 
-            return View(ViewName, department);
+            return View(ViewName, DeptVm);
         }
         [HttpGet]
         public IActionResult Edit(int? id)
@@ -59,9 +67,9 @@ namespace UMS.PL.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Department department, [FromRoute] int id)
+        public IActionResult Edit(DepartmentVM departmentVm, [FromRoute] int id)
         {
-            if (id != department.Id)
+            if (id != departmentVm.Id)
             {
                 return BadRequest();
             }
@@ -69,7 +77,9 @@ namespace UMS.PL.Controllers
             {
                 try
                 {
-                    _departmentRepository.Ubdate(department);
+                    var Dept = _mapper.Map<DepartmentVM, Department>(departmentVm);
+
+                    _departmentRepository.Ubdate(Dept);
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
@@ -79,7 +89,7 @@ namespace UMS.PL.Controllers
                 }
 
             }
-            return View(department);
+            return View(departmentVm);
 
         }
         [HttpGet]
@@ -89,16 +99,18 @@ namespace UMS.PL.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(Department department, [FromRoute] int id)
+        public IActionResult Delete(DepartmentVM departmentVm, [FromRoute] int id)
         {
-            if (id != department.Id)
+            if (id != departmentVm.Id)
             {
                 return BadRequest();
             }
 
             try
             {
-                _departmentRepository.Delete(department);
+                var Dept = _mapper.Map<DepartmentVM, Department>(departmentVm);
+
+                _departmentRepository.Delete(Dept);
                 return RedirectToAction(nameof(Index));
 
             }
@@ -107,7 +119,7 @@ namespace UMS.PL.Controllers
 
                 ModelState.AddModelError(string.Empty, ex.Message);
             }
-            return View(department);
+            return View(departmentVm);
         }
 
 

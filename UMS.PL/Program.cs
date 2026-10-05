@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using UMS.BLL.InterFace;
 using UMS.BLL.Repository;
 using UMS.DAL;
+using UMS.PL.MappingProfile;
 
 namespace UMS.PL
 {
@@ -24,6 +25,8 @@ namespace UMS.PL
 
             builder.Services.AddScoped<IEmpolyeeRepository, EmpolyeeRepository>();
 
+            builder.Services.AddAutoMapper(m=>m.AddProfile(new EmployeeProfile()));
+            builder.Services.AddAutoMapper(m=>m.AddProfile(new DepartmentProfile()));
 
             var app = builder.Build();
 

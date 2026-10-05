@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Employee>
+﻿@model IEnumerable<EmployeeVM>
 @{
     ViewData["Title"] = "Employees Page";
 }
@@ -76,8 +76,8 @@
 else
 {
     <div class="mt-5 alert alert-danger">
-        <h3>There Is No Emplyees</h3>
+        <h3>There Is No Emplyees</h3>                               
     </div>
-            <a asp-action="Index" class="btn btn-secondary">All Employees</a>
+    <a asp-action="Index" class="btn btn-secondary">All Employees</a>
 
 }

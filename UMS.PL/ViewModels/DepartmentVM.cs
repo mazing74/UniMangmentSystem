@@ -1,6 +1,20 @@
-﻿namespace UMS.PL.ViewModels
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using UMS.DAL.Models;
+
+namespace UMS.PL.ViewModels
 {
     public class DepartmentVM
     {
+        public int Id { get; set; }
+        [Required(ErrorMessage = "Name Is Required")]
+        [MaxLength(50)]
+        public string Name { get; set; }
+        [Required(ErrorMessage = "Code Is Required")]
+        public string Code { get; set; }
+        public DateTime DateOfCreation { get; set; }
+        //Navigation Property
+        [InverseProperty("Department")]
+        public ICollection<Employee> Employees { get; set; } = new HashSet<Employee>();
     }
 }
