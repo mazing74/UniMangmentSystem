@@ -21,4 +21,10 @@
     <ProjectReference Include="..\UMS.BLL\UMS.BLL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Files\Images\" />
+    <Folder Include="wwwroot\Files\Words\" />
+    <Folder Include="wwwroot\Files\Pdfs\" />
+  </ItemGroup>
+
 </Project>

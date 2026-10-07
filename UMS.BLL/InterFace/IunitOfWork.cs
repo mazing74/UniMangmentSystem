@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace UMS.BLL.InterFace
 {
-    public interface IunitOfWork
+    public interface IunitOfWork 
     {
         public IEmpolyeeRepository EmpolyeeRepository { get; set; }
         public IDepartmentRepository DepartmentRepository { get; set; }

@@ -8,7 +8,7 @@ using UMS.DAL;
 
 namespace UMS.BLL.Repository
 {
-    public class UnitOfWork : IunitOfWork
+    public class UnitOfWork : IunitOfWork ,IDisposable
     {
         private readonly UniDBContext _context;
 
@@ -25,6 +25,11 @@ namespace UMS.BLL.Repository
         public int Compelete()
         {
           return _context.SaveChanges();
+        }
+
+        public void Dispose()
+        {
+            _context.Dispose();
         }
     }
 }

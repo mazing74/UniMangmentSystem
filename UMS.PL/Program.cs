@@ -25,6 +25,7 @@ namespace UMS.PL
             builder.Services.AddAutoMapper(m=>m.AddProfile(new EmployeeProfile()));
             builder.Services.AddAutoMapper(m=>m.AddProfile(new DepartmentProfile()));
 
+            builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
             builder.Services.AddScoped<IunitOfWork, UnitOfWork>();
 
             var app = builder.Build();

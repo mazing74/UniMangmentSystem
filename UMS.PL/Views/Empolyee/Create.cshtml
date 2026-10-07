@@ -1,11 +1,15 @@
 ﻿@model EmployeeVM
+@inject IDepartmentRepository departmentRepository
+
 @{
     ViewData["Title"] = "CreateEmpolyee";
+    var departments = new SelectList(departmentRepository.GetAll(), "Id", "Name");
+
 }
 <div asp-validation-summary="All"></div>
 
 <h1>Create New Employee</h1>
-<form class="mt-2" asp-action="Create">
+<form class="mt-2" asp-action="Create" enctype="multipart/form-data">
 
     <partial name="PartialViews/CreateEditPartialView" />
 

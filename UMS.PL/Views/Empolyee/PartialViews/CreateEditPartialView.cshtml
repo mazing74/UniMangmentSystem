@@ -1,7 +1,14 @@
 ﻿@model EmployeeVM
+@inject IDepartmentRepository departmentRepository
 @{
-       var departments = new SelectList(ViewBag.Departments, "Id", "Name");
+    var departments = new SelectList(departmentRepository.GetAll(), "Id", "Name");
 }
+<input class="form-control" asp-for="ImageName" hidden />
+
+<div class="form-group">
+    <label class="col-form-label" asp-for="Image"></label>
+    <input class="form-control" asp-for="Image" />
+</div>
 
 <div class="form-group">
     <label class="col-form-label" asp-for="Name"></label>

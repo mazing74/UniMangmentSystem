@@ -27,12 +27,13 @@ namespace UMS.PL.ViewModels
         [Phone]
         public string PhoneNumber { get; set; }
         public DateTime HireDate { get; set; }
-
+        public IFormFile? Image { get; set; }
+        public string? ImageName { get; set; }
 
         [ForeignKey("Department")]
         public int? DepartmentId { get; set; }
         //Navigation Property
         [InverseProperty("Employees")]
-        public Department Department { get; set; }
+        public Department? Department { get; set; }
     }
 }

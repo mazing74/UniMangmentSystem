@@ -1,4 +1,12 @@
 ﻿@model EmployeeVM
+@if(Model.ImageName is not null)
+{
+    <div class="form-group">
+        <input readonly hidden class="form-control" asp-for="ImageName" />
+         <img src="~/Files/Images/@Model.ImageName" class="rounded" width="100" height="100" alt="ImageName" />   
+    </div>
+}
+
 <div class="form-group">
     <label class="col-form-label" asp-for="Name"></label>
     <input readonly class="form-control" asp-for="Name" />

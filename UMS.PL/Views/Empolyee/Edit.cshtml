@@ -4,8 +4,9 @@
 }
 <div asp-validation-summary="All"></div> 
 <h1>Edit @Model.Name Employee</h1>
+<div asp-validation-summary="All"></div>
 
-<form class="mt-2" asp-action="Edit" method="post">
+<form class="mt-2" asp-action="Edit" method="post" enctype="multipart/form-data">
 
     <partial name="PartialViews/CreateEditPartialView" />
 
