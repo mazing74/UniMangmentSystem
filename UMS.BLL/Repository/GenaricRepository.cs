@@ -18,27 +18,24 @@ namespace UMS.BLL.Repository
         {
             _context = context;
         }
-        public void Add(T entity)
+        public async Task AddAsync(T entity)
         {
-            _context.Add(entity);
+           await  _context.AddAsync(entity);
         }
 
         public void Delete(T entity)
         {
-            _context.Remove(entity);
+             _context.Remove(entity);
 
         }
 
-        public IEnumerable<T> GetAll()
+        public async Task<IEnumerable<T>> GetAllAsync()
         {
-            if (typeof(T) == typeof (Employee))
-            {
-                return (IEnumerable<T>)_context.Employees.Include(e => e.Department).ToList();
-            }
-           return _context.Set<T>().ToList();
+            
+           return await _context.Set<T>().ToListAsync();
         }
 
-        public T GetById(int id)=> _context.Set<T>().Find(id);
+        public async Task<T> GetByIdAsync(int id)=> await _context.Set<T>().FindAsync(id);
            
 
         public void Ubdate(T entity)

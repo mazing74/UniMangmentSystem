@@ -16,9 +16,9 @@ namespace UMS.PL.Controllers
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var departments = _unitOfWork.DepartmentRepository.GetAll();
+            var departments = await _unitOfWork.DepartmentRepository.GetAllAsync();
             var DeptVm = _mapper.Map<IEnumerable<Department>, IEnumerable<DepartmentVM>>(departments);
             return View(DeptVm);
         }
@@ -28,16 +28,16 @@ namespace UMS.PL.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Create(DepartmentVM departmentVm)
+        public async Task<IActionResult> Create(DepartmentVM departmentVm)
         {
-            var checkDepartment = _unitOfWork.DepartmentRepository.GetById(departmentVm.Id);
+            var checkDepartment = await _unitOfWork.DepartmentRepository.GetByIdAsync(departmentVm.Id);
             if (checkDepartment is null)
             {
                 if (ModelState.IsValid)
                 {
                     var Dept = _mapper.Map<DepartmentVM, Department>(departmentVm);
-                    _unitOfWork.DepartmentRepository.Add(Dept);
-                    _unitOfWork.Compelete();
+                  await  _unitOfWork.DepartmentRepository.AddAsync(Dept);
+                  await  _unitOfWork.CompeleteAsync();
                     TempData["SuccessMessageOfDepartment"] = "Department created successfully!";
                     return RedirectToAction(nameof(Index));
                 }
@@ -47,12 +47,12 @@ namespace UMS.PL.Controllers
                 return BadRequest();
         }
 
-        public IActionResult Details(int? id, string ViewName = "Details")
+        public async Task<IActionResult> Details(int? id, string ViewName = "Details")
         {
             if (id is null)
                 return BadRequest();
 
-            var department = _unitOfWork.DepartmentRepository.GetById(id.Value);
+            var department = await _unitOfWork.DepartmentRepository.GetByIdAsync(id.Value);
 
             if (department is null)
                 return NotFound();
@@ -61,14 +61,14 @@ namespace UMS.PL.Controllers
             return View(ViewName, DeptVm);
         }
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
-            return Details(id.Value, "Edit");
+            return await Details(id.Value, "Edit");
 
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(DepartmentVM departmentVm, [FromRoute] int id)
+        public async Task<IActionResult> Edit(DepartmentVM departmentVm, [FromRoute] int id)
         {
             if (id != departmentVm.Id)
             {
@@ -81,7 +81,7 @@ namespace UMS.PL.Controllers
                     var Dept = _mapper.Map<DepartmentVM, Department>(departmentVm);
 
                     _unitOfWork.DepartmentRepository.Ubdate(Dept);
-                    _unitOfWork.Compelete();
+                   await _unitOfWork.CompeleteAsync();
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
@@ -95,13 +95,13 @@ namespace UMS.PL.Controllers
 
         }
         [HttpGet]
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
-            return Details(id.Value, "Delete");
+            return await Details(id.Value, "Delete");
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(DepartmentVM departmentVm, [FromRoute] int id)
+        public async Task<IActionResult> Delete(DepartmentVM departmentVm, [FromRoute] int id)
         {
             if (id != departmentVm.Id)
             {
@@ -113,7 +113,7 @@ namespace UMS.PL.Controllers
                 var Dept = _mapper.Map<DepartmentVM, Department>(departmentVm);
 
                 _unitOfWork.DepartmentRepository.Delete(Dept);
-                _unitOfWork.Compelete();
+               await  _unitOfWork.CompeleteAsync();
                 return RedirectToAction(nameof(Index));
 
             }

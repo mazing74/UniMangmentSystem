@@ -8,11 +8,11 @@ namespace UMS.BLL.InterFace
 {
     public interface IGenaricRepository<T>
     {
-        public IEnumerable<T> GetAll();
-        public T GetById(int id);
-        public void  Add(T entity);
-        public void  Ubdate(T entity);
-        public void  Delete(T entity);
+        public Task<IEnumerable<T>> GetAllAsync();
+        public Task<T> GetByIdAsync(int id);
+        public Task  AddAsync(T entity);
+        public void Ubdate(T entity);
+        public void Delete(T entity);
 
     }
 }

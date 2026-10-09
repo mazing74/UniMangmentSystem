@@ -17,19 +17,19 @@ namespace UMS.PL.Controllers
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public IActionResult Index(string searchedvalue)
+        public async Task<IActionResult> Index(string searchedvalue)
         {
-            var employees = _unitOfWork.EmpolyeeRepository.SearchByName(searchedvalue);
+            var employees =  _unitOfWork.EmpolyeeRepository.SearchByName(searchedvalue);
             var empVm = _mapper.Map<IEnumerable<Employee>, IEnumerable<EmployeeVM>>(employees);
             return View(empVm);
         }
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewBag.Departments = _unitOfWork.DepartmentRepository.GetAll();
+            ViewBag.Departments = await _unitOfWork.DepartmentRepository.GetAllAsync();
             return View();
         }
         [HttpPost]
-        public IActionResult Create(EmployeeVM employeevm)
+        public async Task<IActionResult> Create(EmployeeVM employeevm)
         {
             if (ModelState.IsValid)
             {
@@ -40,8 +40,8 @@ namespace UMS.PL.Controllers
 
                 }
                 var MappedEmp = _mapper.Map<EmployeeVM, Employee>(employeevm);
-                _unitOfWork.EmpolyeeRepository.Add(MappedEmp);
-                _unitOfWork.Compelete();
+                await _unitOfWork.EmpolyeeRepository.AddAsync(MappedEmp);
+               await _unitOfWork.CompeleteAsync();
 
                 TempData["SuccessMessageOfEmpolyee"] = "Employee created successfully!";
 
@@ -49,12 +49,12 @@ namespace UMS.PL.Controllers
             }
             return View(employeevm);
         }
-        public IActionResult Details(int? id, string ViewName = "Details")
+        public async Task<IActionResult> Details(int? id, string ViewName = "Details")
         {
             if (id is null)
                 return BadRequest();
 
-            var empolyee = _unitOfWork.EmpolyeeRepository.GetById(id.Value);
+            var empolyee = await _unitOfWork.EmpolyeeRepository.GetByIdAsync(id.Value);
 
             if (empolyee is null)
                 return NotFound();
@@ -62,10 +62,10 @@ namespace UMS.PL.Controllers
             var empVm = _mapper.Map<Employee, EmployeeVM>(empolyee);
             return View(ViewName, empVm);
         }
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
-            ViewBag.Departments = _unitOfWork.DepartmentRepository.GetAll();
-            return Details(id.Value, "Edit");
+            ViewBag.Departments = await _unitOfWork.DepartmentRepository.GetAllAsync();
+            return await Details(id.Value, "Edit");
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -86,7 +86,7 @@ namespace UMS.PL.Controllers
                     }
                     var employee = _mapper.Map<EmployeeVM, Employee>(employeevM);
                     _unitOfWork.EmpolyeeRepository.Ubdate(employee);
-                    _unitOfWork.Compelete();
+                    _unitOfWork.CompeleteAsync();
 
                     return RedirectToAction(nameof(Index));
 
@@ -99,12 +99,12 @@ namespace UMS.PL.Controllers
             }
             return View(employeevM);
         }
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
-            return Details(id.Value, "Delete");
+            return await Details(id.Value, "Delete");
         }
         [HttpPost]
-        public IActionResult Delete(EmployeeVM employeeVm, [FromRoute] int id)
+        public async Task<IActionResult> Delete(EmployeeVM employeeVm, [FromRoute] int id)
         {
             if (id != employeeVm.Id)
             {
@@ -114,8 +114,8 @@ namespace UMS.PL.Controllers
             {
 
                 var employee = _mapper.Map<EmployeeVM, Employee>(employeeVm);
-                _unitOfWork.EmpolyeeRepository.Delete(employee);
-                var result = _unitOfWork.Compelete();
+                 _unitOfWork.EmpolyeeRepository.Delete(employee);
+                var result = await _unitOfWork.CompeleteAsync();
                 if (result > 0 && employeeVm.ImageName is not null)
                 {
                     DocumentSettings.DeleteFile("Images", employeeVm.ImageName);

@@ -10,6 +10,6 @@ namespace UMS.BLL.InterFace
     {
         public IEmpolyeeRepository EmpolyeeRepository { get; set; }
         public IDepartmentRepository DepartmentRepository { get; set; }
-        public int Compelete();
+        public Task<int> CompeleteAsync();
     }
 }

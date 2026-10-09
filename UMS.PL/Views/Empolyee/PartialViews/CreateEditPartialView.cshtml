@@ -1,7 +1,7 @@
 ﻿@model EmployeeVM
 @inject IDepartmentRepository departmentRepository
 @{
-    var departments = new SelectList(departmentRepository.GetAll(), "Id", "Name");
+    var departments = new SelectList( departmentRepository.GetAllAsync().Result, "Id", "Name");
 }
 <input class="form-control" asp-for="ImageName" hidden />
 

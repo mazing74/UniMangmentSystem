@@ -3,7 +3,7 @@
 
 @{
     ViewData["Title"] = "CreateEmpolyee";
-    var departments = new SelectList(departmentRepository.GetAll(), "Id", "Name");
+    var departments = new SelectList(await departmentRepository.GetAllAsync(), "Id", "Name");
 
 }
 <div asp-validation-summary="All"></div>
