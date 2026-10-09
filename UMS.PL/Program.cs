@@ -18,6 +18,7 @@ namespace UMS.PL
             // Add services to The Database.
             builder.Services.AddDatabaseServices(builder.Configuration);
 
+            //hi
             var app = builder.Build();
 
             app.UseMiddlewaresPipeline();
