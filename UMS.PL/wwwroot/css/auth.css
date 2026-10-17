@@ -1,0 +1,591 @@
+﻿:root {
+    --ink: #0b1826;
+    --teal: #17a3a3;
+    --amber: #f5a83b;
+    --coral: #ef6f5b;
+    --surface: #f4f7f8;
+    --card: #ffffff;
+    --text: #12283d;
+    --muted: #5b6b7a;
+    --line: #d6dfe5;
+    --danger: #c93c2e;
+    --ease: cubic-bezier(.22, 1, .36, 1);
+    --display: 'Bricolage Grotesque', system-ui, sans-serif;
+    --body: 'DM Sans', system-ui, sans-serif;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html {
+    color-scheme: light;
+}
+
+body {
+    margin: 0;
+    font-family: var(--body);
+    color: var(--text);
+    background: var(--surface);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Smooth cross-page morph between Login and Register (Chromium; ignored elsewhere) */
+@view-transition {
+    navigation: auto;
+}
+
+.auth-card {
+    view-transition-name: auth-card;
+}
+
+.auth-stage {
+    view-transition-name: auth-stage;
+}
+
+.auth-shell {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    min-height: 100dvh;
+}
+
+/* ---------- Stage (left) ---------- */
+.auth-stage {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: clamp(1.5rem, 4vw, 3.5rem);
+    color: #fff;
+    background: var(--ink);
+}
+
+.stage-fx {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+}
+
+.orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(70px);
+    opacity: .6;
+    will-change: transform;
+}
+
+.orb-a {
+    width: 34rem;
+    height: 34rem;
+    background: var(--teal);
+    top: -10rem;
+    left: -8rem;
+    animation: drift-a 16s ease-in-out infinite alternate;
+}
+
+.orb-b {
+    width: 26rem;
+    height: 26rem;
+    background: var(--amber);
+    bottom: -9rem;
+    right: -6rem;
+    animation: drift-b 19s ease-in-out infinite alternate;
+    opacity: .5;
+}
+
+.orb-c {
+    width: 18rem;
+    height: 18rem;
+    background: var(--coral);
+    top: 45%;
+    left: 40%;
+    animation: drift-c 22s ease-in-out infinite alternate;
+    opacity: .35;
+}
+
+.stage-grid {
+    position: absolute;
+    inset: 0;
+    opacity: .5;
+    background-image: linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse at 30% 40%, #000 20%, transparent 75%);
+}
+
+@keyframes drift-a {
+    to {
+        transform: translate(9rem, 7rem) scale(1.15);
+    }
+}
+
+@keyframes drift-b {
+    to {
+        transform: translate(-8rem, -6rem) scale(1.2);
+    }
+}
+
+@keyframes drift-c {
+    to {
+        transform: translate(-6rem, 5rem) scale(.8);
+    }
+}
+
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: .65rem;
+    width: fit-content;
+    color: #fff;
+    text-decoration: none;
+    font: 700 1.2rem var(--display);
+    letter-spacing: -.01em;
+}
+
+.brand-mark {
+    width: 1.7rem;
+    height: 1.7rem;
+    border-radius: .55rem;
+    background: linear-gradient(135deg, var(--amber), var(--coral));
+    animation: spin-mark 12s linear infinite;
+}
+
+@keyframes spin-mark {
+    50% {
+        border-radius: 50%;
+        transform: rotate(180deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.stage-copy h2 {
+    margin: 0 0 1rem;
+    font: 700 clamp(2rem, 4.2vw, 3.6rem)/1.05 var(--display);
+    letter-spacing: -.03em;
+}
+
+    .stage-copy h2 .reveal {
+        display: block;
+    }
+
+.stage-copy p {
+    max-width: 30ch;
+    margin: 0;
+    font-size: 1.05rem;
+    line-height: 1.55;
+    color: rgba(255,255,255,.75);
+}
+
+/* The one orchestrated entrance */
+.reveal {
+    animation: rise .9s var(--ease) both;
+    animation-delay: var(--d, 0s);
+}
+
+@keyframes rise {
+    from {
+        opacity: 0;
+        transform: translateY(1.4rem);
+        filter: blur(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+        filter: none;
+    }
+}
+
+.seen .reveal {
+    animation: none;
+}
+
+/* ---------- Main (right) ---------- */
+.auth-main {
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 1.25rem;
+    padding: clamp(1.25rem, 4vw, 3rem);
+}
+
+.auth-card {
+    width: min(100%, 26rem);
+    padding: clamp(1.75rem, 4vw, 2.5rem);
+    background: var(--card);
+    border-radius: 22px;
+    box-shadow: 0 1px 2px rgba(11,24,38,.06), 0 24px 60px -24px rgba(11,24,38,.25);
+    animation: card-in .9s .25s var(--ease) both;
+}
+
+.seen .auth-card {
+    animation-duration: .45s;
+    animation-delay: 0s;
+}
+
+@keyframes card-in {
+    from {
+        opacity: 0;
+        transform: translateY(2rem) scale(.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.auth-foot {
+    margin: 0;
+    font-size: .8rem;
+    color: var(--muted);
+}
+
+.auth-head h1 {
+    margin: 0 0 .35rem;
+    font: 700 1.9rem/1.1 var(--display);
+    letter-spacing: -.02em;
+}
+
+.auth-head p {
+    margin: 0 0 1.75rem;
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+/* ---------- Fields (floating labels) ---------- */
+.field {
+    position: relative;
+    margin-bottom: 1.1rem;
+}
+
+    .field input {
+        width: 100%;
+        padding: 1.45rem 1rem .55rem;
+        font: 500 1rem var(--body);
+        color: var(--text);
+        background: #fff;
+        border: 1.5px solid var(--line);
+        border-radius: 12px;
+        outline: none;
+        transition: border-color .2s, box-shadow .2s;
+    }
+
+        .field input:hover {
+            border-color: #b8c6d0;
+        }
+
+        .field input:focus {
+            border-color: var(--teal);
+            box-shadow: 0 0 0 4px rgba(23,163,163,.15);
+        }
+
+    .field label {
+        position: absolute;
+        left: 1rem;
+        top: 1.05rem;
+        color: var(--muted);
+        pointer-events: none;
+        transform-origin: left top;
+        transition: transform .25s var(--ease), color .2s;
+    }
+
+    .field input:focus + label,
+    .field input:not(:placeholder-shown) + label {
+        transform: translateY(-.72rem) scale(.78);
+    }
+
+    .field input:focus + label {
+        color: var(--teal);
+    }
+
+    .field.has-toggle input {
+        padding-right: 3rem;
+    }
+
+.reveal-btn {
+    position: absolute;
+    right: .5rem;
+    top: .55rem;
+    width: 2.2rem;
+    height: 2.2rem;
+    display: grid;
+    place-items: center;
+    border: 0;
+    border-radius: 10px;
+    background: none;
+    color: var(--muted);
+    cursor: pointer;
+    transition: background .2s, color .2s;
+}
+
+    .reveal-btn:hover {
+        background: #eef3f5;
+        color: var(--text);
+    }
+
+    .reveal-btn.is-on {
+        color: var(--teal);
+    }
+
+    .reveal-btn svg {
+        width: 1.2rem;
+        height: 1.2rem;
+    }
+
+/* ---------- Validation ---------- */
+.input-validation-error {
+    border-color: var(--danger) !important;
+    animation: shake .4s var(--ease);
+}
+
+.field-validation-error {
+    display: block;
+    margin-top: .4rem;
+    font-size: .82rem;
+    color: var(--danger);
+    animation: drop .3s var(--ease);
+}
+
+.auth-alert.validation-summary-errors {
+    margin-bottom: 1.1rem;
+    padding: .8rem 1rem;
+    border-radius: 12px;
+    background: #fdecea;
+    color: var(--danger);
+    font-size: .9rem;
+    animation: drop .3s var(--ease);
+}
+
+.auth-alert ul {
+    margin: 0;
+    padding-left: 1.1rem;
+}
+
+@keyframes shake {
+    20%, 60% {
+        transform: translateX(-5px);
+    }
+
+    40%, 80% {
+        transform: translateX(5px);
+    }
+}
+
+@keyframes drop {
+    from {
+        opacity: 0;
+        transform: translateY(-.4rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* ---------- Password strength ---------- */
+.strength {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: .3rem;
+    margin: -.4rem 0 1.1rem;
+}
+
+    .strength span {
+        height: 4px;
+        border-radius: 4px;
+        background: var(--line);
+        transition: background .3s, transform .3s var(--ease);
+        transform-origin: left;
+    }
+
+        .strength span.on {
+            background: var(--danger);
+        }
+
+    .strength[data-level="2"] span.on {
+        background: var(--amber);
+    }
+
+    .strength[data-level="3"] span.on {
+        background: #9bbf3b;
+    }
+
+    .strength[data-level="4"] span.on {
+        background: var(--teal);
+    }
+
+/* ---------- Checkbox + row ---------- */
+.row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: .2rem 0 1.4rem;
+    font-size: .9rem;
+}
+
+.check {
+    display: inline-flex;
+    align-items: center;
+    gap: .55rem;
+    cursor: pointer;
+    color: var(--muted);
+}
+
+    .check input {
+        appearance: none;
+        width: 1.15rem;
+        height: 1.15rem;
+        margin: 0;
+        border: 1.5px solid var(--line);
+        border-radius: 6px;
+        display: grid;
+        place-content: center;
+        transition: background .2s, border-color .2s;
+        cursor: pointer;
+    }
+
+        .check input::after {
+            content: '';
+            width: .3rem;
+            height: .6rem;
+            border: solid #fff;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg) scale(0);
+            transition: transform .2s var(--ease);
+            margin-top: -2px;
+        }
+
+        .check input:checked {
+            background: var(--teal);
+            border-color: var(--teal);
+        }
+
+            .check input:checked::after {
+                transform: rotate(45deg) scale(1);
+            }
+
+        .check input:focus-visible {
+            outline: 3px solid rgba(23,163,163,.35);
+            outline-offset: 2px;
+        }
+
+a {
+    color: var(--teal);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+    a:hover {
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+
+    a:focus-visible, button:focus-visible {
+        outline: 3px solid rgba(23,163,163,.4);
+        outline-offset: 2px;
+        border-radius: 6px;
+    }
+
+/* ---------- Button ---------- */
+.btn-auth {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    padding: .95rem 1rem;
+    border: 0;
+    border-radius: 12px;
+    cursor: pointer;
+    font: 600 1rem var(--body);
+    color: #fff;
+    background: linear-gradient(135deg, var(--ink), #16405a);
+    transition: transform .2s var(--ease), box-shadow .2s;
+}
+
+    .btn-auth::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,.25) 50%, transparent 70%);
+        transform: translateX(-120%);
+    }
+
+    .btn-auth:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px -10px rgba(11,24,38,.5);
+    }
+
+        .btn-auth:hover::before {
+            transform: translateX(120%);
+            transition: transform .7s var(--ease);
+        }
+
+    .btn-auth:active {
+        transform: translateY(0) scale(.99);
+    }
+
+    .btn-auth.is-loading {
+        pointer-events: none;
+        color: transparent;
+    }
+
+        .btn-auth.is-loading::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            margin: auto;
+            width: 1.3rem;
+            height: 1.3rem;
+            border: 2.5px solid rgba(255,255,255,.35);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin .7s linear infinite;
+        }
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.auth-switch {
+    margin: 1.5rem 0 0;
+    text-align: center;
+    color: var(--muted);
+    font-size: .95rem;
+}
+
+/* ---------- Responsive + motion ---------- */
+@media (max-width: 900px) {
+    .auth-shell {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+    }
+
+    .auth-stage {
+        padding: 1.25rem 1.5rem;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .stage-copy {
+        display: none;
+    }
+
+    .orb {
+        filter: blur(50px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}

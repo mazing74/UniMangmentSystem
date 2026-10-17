@@ -1,0 +1,65 @@
+﻿
+@{
+    var appName = "UniMangmetSystem"; // <- change to your product name
+    var line1 = ViewData["StageLine1"] as string ?? "Sign in once.";
+    var line2 = ViewData["StageLine2"] as string ?? "Get straight to work.";
+    var subtitle = ViewData["StageSub"] as string ?? "Your account keeps everything in one place, on any device.";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - @appName</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/auth.css" asp-append-version="true" />
+    <script>
+            // Play the intro animation once per session; switching Login <-> Register stays calm.
+            try {
+                if (sessionStorage.getItem('auth-seen')) document.documentElement.classList.add('seen');
+                else sessionStorage.setItem('auth-seen', '1');
+            } catch (e) { }
+    </script>
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <div class="auth-shell">
+
+        <aside class="auth-stage">
+            <div class="stage-fx" aria-hidden="true">
+                <span class="orb orb-a"></span>
+                <span class="orb orb-b"></span>
+                <span class="orb orb-c"></span>
+                <span class="stage-grid"></span>
+            </div>
+
+            <a class="brand" href="/">
+                <span class="brand-mark" aria-hidden="true"></span>
+                <span>@appName</span>
+            </a>
+
+            <div class="stage-copy">
+                <h2>
+                    <span class="reveal" style="--d:.15s">@line1</span>
+                    <span class="reveal" style="--d:.3s">@line2</span>
+                </h2>
+                <p class="reveal" style="--d:.5s">@subtitle</p>
+            </div>
+        </aside>
+
+        <main class="auth-main">
+            <div class="auth-card">
+                @RenderBody()
+            </div>
+            <p class="auth-foot">&copy; @DateTime.Now.Year @appName</p>
+        </main>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/auth.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
