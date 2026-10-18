@@ -9,7 +9,7 @@ using UMS.DAL.Models;
 
 namespace UMS.DAL
 {
-    public class UniDBContext :IdentityDbContext       
+    public class UniDBContext :IdentityDbContext<ApplicationUser>       
     {
         public UniDBContext(DbContextOptions<UniDBContext> options):base(options){}
 

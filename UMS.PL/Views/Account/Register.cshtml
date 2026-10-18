@@ -3,7 +3,7 @@
     ViewData["Title"] = "Create account";
     ViewData["StageLine1"] = "Set up in a minute.";
     ViewData["StageLine2"] = "Nothing to install.";
-    Layout = "AuthLayout";
+    Layout = "AuthLayout";  
 }
 
 <header class="auth-head">
@@ -11,8 +11,8 @@
     <p>It takes less than a minute.</p>
 </header>
 
-<form asp-action="Register" method="post" novalidate>
-    <div asp-validation-summary="ModelOnly" class="auth-alert"></div>
+<form asp-action="Register" method="post" >
+    <div asp-validation-summary="All" class="auth-alert"></div>
 
     <div class="field">
         <input asp-for="FullName" placeholder=" " autocomplete="name" />
@@ -40,11 +40,17 @@
         <span asp-validation-for="ConfirmPassword"></span>
     </div>
 
+    <div class="whthree-text">
+        <input asp-for="IsAgree" placeholder=" "  />
+    <br />  
+        <label asp-for="IsAgree" > Agree All Terms And Conditions </label>
+    </div>
+
     <button type="submit" class="btn-auth">Create account</button>
 </form>
 
 <p class="auth-switch">Already have an account? <a asp-action="Login">Sign in</a></p>
 
-@section Scripts {
+@section ValidationScriptSection {
     <partial name="_ValidationScriptsPartial" />
 }
