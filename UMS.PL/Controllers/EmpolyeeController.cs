@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UMS.BLL.InterFace;
 using UMS.DAL.Models;
@@ -7,6 +8,7 @@ using UMS.PL.ViewModels;
 
 namespace UMS.PL.Controllers
 {
+    [Authorize]
     public class EmpolyeeController : Controller
     {
         private readonly IunitOfWork _unitOfWork;

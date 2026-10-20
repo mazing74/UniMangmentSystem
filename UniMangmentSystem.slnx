@@ -2,4 +2,5 @@
   <Project Path="UMS.BLL/UMS.BLL.csproj" />
   <Project Path="UMS.DAL/UMS.DAL.csproj" />
   <Project Path="UMS.PL/UMS.PL.csproj" />
+  <Project Path="UMS.TESTS/UMS.TESTS.csproj" Id="126e982b-6013-4a85-82d2-1bd86db906d4" />
 </Solution>

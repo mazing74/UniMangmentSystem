@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using UMS.BLL.InterFace;
 using UMS.BLL.Repository;
@@ -30,8 +31,13 @@ namespace UMS.PL.Extension
                 op.Password.RequireUppercase = true;
                 op.Password.RequireLowercase = true;
             }
-            ).AddEntityFrameworkStores<UniDBContext>();
-            Services.AddAuthentication();
+            ).AddEntityFrameworkStores<UniDBContext>()
+            .AddDefaultTokenProviders();
+            Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(Ops=>
+            {
+                Ops.LoginPath = "Account/Login";
+                Ops.AccessDeniedPath = "Home/Error";
+            });
 
             return Services;
         }
