@@ -1,3 +1,7 @@
+using Microsoft.AspNetCore.Identity;
+using UMS.DAL.Models;
+using UMS.PL.Controllers;
+
 namespace UMS.TESTS
 {
     public class AccountControllerTests
@@ -7,10 +11,8 @@ namespace UMS.TESTS
         //Login_ValidCredentials_RedirectsToHome
         //Register_ValidModel_CreatesUser
         //Register_DuplicateEmail_ReturnsRegisterView
-
-
         [Fact]
-        public void Test1()
+        public void HttpGetLogin_UseIT_RetursnLoginView()
         {
 
         }

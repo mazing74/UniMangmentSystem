@@ -97,5 +97,12 @@ namespace UMS.PL.Controllers
             return View(loginVM);
         }
 
+        public async Task <IActionResult> SignOut ()
+        {
+
+            await _signInManager.SignOutAsync();
+            return RedirectToAction(nameof(Login));
+        }
+
     }
 }
