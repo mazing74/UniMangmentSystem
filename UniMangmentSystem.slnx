@@ -1,6 +1,7 @@
 <Solution>
+  <Project Path="UMS.BLL.TESTS/UMS.BLL.TESTS.csproj" Id="9a521e29-c88c-4ee7-aba3-ab17f37fd5c0" />
   <Project Path="UMS.BLL/UMS.BLL.csproj" />
   <Project Path="UMS.DAL/UMS.DAL.csproj" />
   <Project Path="UMS.PL/UMS.PL.csproj" />
-  <Project Path="UMS.TESTS/UMS.TESTS.csproj" Id="126e982b-6013-4a85-82d2-1bd86db906d4" />
+  <Project Path="UMS.TESTS/UMS.PL.TESTS.csproj" Id="126e982b-6013-4a85-82d2-1bd86db906d4" />
 </Solution>

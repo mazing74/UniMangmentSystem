@@ -54,6 +54,7 @@ namespace UMS.PL.Controllers
         }
         #endregion
 
+        #region Login
         [HttpGet]
         public IActionResult Login()
         {
@@ -96,13 +97,22 @@ namespace UMS.PL.Controllers
 
             return View(loginVM);
         }
+        #endregion
 
-        public async Task <IActionResult> SignOut ()
+        #region SignOut
+        public new async Task<IActionResult> SignOut()
         {
 
             await _signInManager.SignOutAsync();
             return RedirectToAction(nameof(Login));
         }
+        #endregion
 
+        #region ForgetPassword
+
+
+
+
+        #endregion
     }
 }
