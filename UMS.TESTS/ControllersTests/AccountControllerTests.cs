@@ -42,7 +42,24 @@ namespace UMS.TESTS
                 _userManagerMock.Object,
                 _signInManagerMock.Object);
         }
+        #region Helpers
+        private static RegisterViewModel ValidRegisterVM() => new()
+        {
+            FullName = "Mazin Test",
+            Email = "mazin@example.com",
+            Password = "Password123!",
+            IsAgree = true
+        };
 
+        private static LoginViewModel ValidLoginVM() => new()
+        {
+            Email = "mazin@example.com",
+            Password = "Password123!",
+            RememberMe = false
+        }; 
+        #endregion
+
+        #region Login
 
         [Fact]
         public void LoginGet_WhenCallIt_ReturnsViewOfLogin()
@@ -54,6 +71,7 @@ namespace UMS.TESTS
             Assert.IsType<ViewResult>(result);
         }
 
+     
         [Fact]
         public async Task LoginPost_ValidCrednetialsButTheEmailDoesNotExist_AddModelStatErrorInTheSameView()
         {
@@ -75,6 +93,62 @@ namespace UMS.TESTS
             Assert.Equal(view.Model, ValidLoginVm);
             Assert.Equal("Invalid username or password", _controller.ModelState[" "]!.Errors.Single().ErrorMessage);
 
+        } 
+        #endregion
+
+
+        #region Register
+
+        [Fact]
+        public void Register_Get_ReturnsView()
+        {
+            // Act
+            var result = _controller.Register();
+
+            // Assert
+            Assert.IsType<ViewResult>(result);
         }
+
+        [Fact]
+        public async Task Register_ValidModel_RedirectsToLogin()
+        {
+            // Arrange
+            var vm = ValidRegisterVM();
+            _userManagerMock
+                .Setup(u => u.CreateAsync(It.IsAny<ApplicationUser>(), vm.Password))
+                .ReturnsAsync(IdentityResult.Success);
+
+            // Act
+            var result = await _controller.Register(vm);
+
+            // Assert
+            var redirect = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal(nameof(AccountController.Login), redirect.ActionName);
+        }
+
+        [Fact]
+        public async Task Register_ValidModel_SetsUserNameFromEmailPrefix()
+        {
+            // Arrange
+            var vm = ValidRegisterVM();
+            ApplicationUser? createdUser = null;
+
+            _userManagerMock
+                .Setup(u => u.CreateAsync(It.IsAny<ApplicationUser>(), vm.Password))
+                .Callback<ApplicationUser, string>((user, _) => createdUser = user)
+                .ReturnsAsync(IdentityResult.Success);
+
+            // Act
+            await _controller.Register(vm);
+
+            // Assert
+            Assert.NotNull(createdUser);
+            Assert.Equal("mazin", createdUser!.UserName);
+            Assert.Equal(vm.Email, createdUser.Email);
+            Assert.Equal(vm.FullName, createdUser.FullName);
+        }
+
+        #endregion
+
     }
 }

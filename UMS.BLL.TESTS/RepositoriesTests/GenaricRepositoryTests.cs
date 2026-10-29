@@ -17,6 +17,27 @@ namespace UMS.BLL.TESTS.RepositoriesTests
             _genaric = new GenaricRepository<Employee>(_context);
         }
 
+        #region Helpers
+
+        // Helper: builds a valid employee so each test stays short
+        private static Employee CreateEmployee(string email = "Mezo@gmail.com") => new Employee()
+        {
+            Salary = 1000,
+            Age = 15,
+            Address = "Zifa",
+            Email = email,
+            PhoneNumber = "0123456789",
+            IsActive = true,
+        };
+
+        // Helper: saves employees directly with the context (not with the repository),
+        // so the test only checks the method we are testing
+        private async Task SeedAsync(params Employee[] employees)
+        {
+            _context.Set<Employee>().AddRange(employees);
+            await _context.SaveChangesAsync();
+        }
+        #endregion
 
         [Fact]
         public async Task AddAsync_ValidEmployee_AddsEmployeeToContext()
@@ -38,5 +59,36 @@ namespace UMS.BLL.TESTS.RepositoriesTests
             // Assert
             Assert.Equal(EntityState.Added, _context.Entry(emp).State);
         }
+
+
+
+        [Fact]
+        public async Task GetAllAsync_EmployeesExist_ReturnsAllEmployees()
+        {
+            // Arrange
+            await SeedAsync(CreateEmployee("one@gmail.com"), CreateEmployee("two@gmail.com"));
+
+            // Act
+            var result = await _genaric.GetAllAsync();
+
+            // Assert
+            Assert.Equal(2, result.Count());
+        }
+
+        [Fact]
+        public async Task GetByIdAsync_ExistingId_ReturnsEmployee()
+        {
+            // Arrange
+            var emp = CreateEmployee();
+            await SeedAsync(emp);
+
+            // Act
+            var result = await _genaric.GetByIdAsync(emp.Id);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(emp.Email, result.Email);
+        }
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using UMS.DAL.Models;
+using UMS.PL.Helpers;
 using UMS.PL.ViewModels;
 
 namespace UMS.PL.Controllers
@@ -110,8 +111,70 @@ namespace UMS.PL.Controllers
 
         #region ForgetPassword
 
+        public IActionResult ForgotPassword()
+        {
+            return View();
 
+        }
+        [HttpPost]
+        public async Task<IActionResult> SendEmail(ForgotPasswordVM model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManger.FindByEmailAsync(model.Email);
 
+                if (user is not null)
+                {
+                    var token = await _userManger.GeneratePasswordResetTokenAsync(user);
+                    var ResetPasswordLink = Url.Action("ResetPassword", "Account", new { Email = user.Email, Token = token }, "https", "localhost:7178");
+                    // Send Email
+                    var email = new Email()
+                    {
+                        Subject = "Reset Password For Uni Mangment System",
+                        To = model.Email,
+                        Body = ResetPasswordLink,
+                    };
+                    EmailSettings.SendEmail(email);
+                    return RedirectToAction(nameof(CheckInbox));
+                }
+                ModelState.AddModelError(" ", " Email Not Exist");
+            }
+
+            return View("ForgotPassword", model);
+        }
+
+        public IActionResult CheckInbox()
+        {
+            return View();
+
+        }
+        public IActionResult ResetPassword(string Email, string Token)
+        {
+            TempData["Email"] = Email;
+            TempData["Token"] = Token;
+            return View();
+
+        }
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordVM passwordVM)
+        {
+            if (ModelState.IsValid)
+            {
+                string email = TempData["Email"] as string;
+                string token = TempData["Token"] as string;
+
+                var user = await _userManger.FindByEmailAsync(email);
+                var result = await _userManger.ResetPasswordAsync(user, token, passwordVM.Password);
+                if (result.Succeeded)
+                    return RedirectToAction(nameof(Login));
+
+                else
+                    foreach (var error in result.Errors)
+                        ModelState.AddModelError(" ", error.Description);
+            }
+
+            return View(passwordVM);
+        }
 
         #endregion
     }
